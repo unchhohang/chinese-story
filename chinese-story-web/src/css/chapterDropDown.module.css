@@ -1,0 +1,28 @@
+.chapterContainer {
+  display: flex;
+  justify-content: flex-end;
+  margin: 12px;
+}
+
+.chaptersBtn {
+  border-style: hidden;
+  background-color: #a18276;
+  color: "#fffcfc";
+  font-size: 1.5em;
+  padding: "2px";
+  margin: "10px";
+  width: "10vw";
+  margin-bottom: "0px";
+}
+
+.chapters {
+  /* margin-left: 10px; */
+  /* display: none; */
+  position: absolute;
+  height: 10vh;
+  width: "10vw";
+}
+
+/* .chapterContainer:onClick .chapters {
+  display: block;
+} */

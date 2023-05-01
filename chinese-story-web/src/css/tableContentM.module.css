@@ -1,0 +1,10 @@
+.chapterInput {
+  border: none;
+  border-bottom: 1px solid black;
+}
+
+.chapterInput:focus {
+  border: none;
+  outline: none;
+  border-bottom: 1px solid black;
+}

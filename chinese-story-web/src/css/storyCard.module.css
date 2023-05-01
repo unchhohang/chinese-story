@@ -1,0 +1,16 @@
+.cardContainer{
+    padding: 10px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 1s ,
+
+}
+
+.cardContainer:hover{
+    transform: scale(1.2,1.2);
+}
+
+.name{
+}

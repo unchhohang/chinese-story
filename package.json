@@ -1,0 +1,11 @@
+{
+  "name": "chinese-story",
+  "version": "1.0.0",
+  "description": "main directory. Included client and server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Unchhohang",
+  "license": "ISC"
+}

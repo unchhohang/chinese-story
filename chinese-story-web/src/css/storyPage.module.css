@@ -1,0 +1,29 @@
+@font-face {
+  font-family: LibreBaskerville;
+  src: url("../asset/Libre_Baskerville/LibreBaskerville-Regular.ttf");
+}
+
+h1 {
+  font-family: LibreBaskerville;
+  padding: 10px;
+  margin: 5px;
+}
+
+div {
+  font-family: LibreBaskerville;
+  text-align: justify;
+}
+
+.tableContent {
+  font-family: LibreBaskerville;
+  background-color: #d9d9d9;
+  padding: 10px;
+  margin: 5px;
+  color: black;
+  font-size: larger;
+}
+
+.tableContent:hover{
+  background-color: black;
+  color: #FFFFFF;
+}
