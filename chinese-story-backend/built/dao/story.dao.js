@@ -24,8 +24,19 @@ class StoryDao {
                 return 200;
             }
             catch (err) {
-                throw new Error(err);
                 return 500;
+            }
+        });
+    }
+    // GET  stories
+    getStories() {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const stories = yield Story_1.default.find({});
+                return stories;
+            }
+            catch (err) {
+                console.log(err);
             }
         });
     }

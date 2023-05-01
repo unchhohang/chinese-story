@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteStory = exports.searchStory = exports.removeTag = exports.addTag = exports.updateImageUrl = exports.updateSynopsis = exports.updateRating = exports.updateTitle = exports.createStory = void 0;
+exports.deleteStory = exports.searchStory = exports.removeTag = exports.addTag = exports.updateImageUrl = exports.updateSynopsis = exports.updateRating = exports.updateTitle = exports.getStories = exports.createStory = void 0;
 const chapter_dao_1 = __importDefault(require("../dao/chapter.dao"));
 const story_dao_1 = __importDefault(require("../dao/story.dao"));
 // Create story title
@@ -24,6 +24,13 @@ function createStory(req, res) {
     });
 }
 exports.createStory = createStory;
+function getStories(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const stories = yield story_dao_1.default.getStories();
+        res.send(stories);
+    });
+}
+exports.getStories = getStories;
 function updateTitle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const update = yield story_dao_1.default.updateTitle(String(req.body.storyId), String(req.body.title));
@@ -68,7 +75,7 @@ function removeTag(req, res) {
 exports.removeTag = removeTag;
 function searchStory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const result = yield story_dao_1.default.searchStory(req.body.title);
+        const result = yield story_dao_1.default.searchStory(String(req.query.title));
         res.send(result);
     });
 }

@@ -8,6 +8,7 @@ const storySchema = new Schema({
   coverImageUrl: String,
   tags: [String],
   synopsis: String,
+  author: String,
 });
 
 const StoryModel = mongoose.model("Story", storySchema);

@@ -2,11 +2,17 @@
 
 import { Application } from "express";
 import multer from "multer";
-import { createChapter, deleteChapter, readChapter, uploadChapter } from "../controller/chapter.controller";
+import {
+  createChapter,
+  deleteChapter,
+  readChapter,
+  uploadChapter,
+} from "../controller/chapter.controller";
 import {
   addTag,
   createStory,
   deleteStory,
+  getStories,
   removeTag,
   searchStory,
   updateImageUrl,
@@ -27,8 +33,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export function routingLikeAPro(app: Application) {
-  app.route("/story").get(searchStory).post(createStory).delete(deleteStory);
+  app.route("/story").get(getStories).post(createStory).delete(deleteStory);
 
+  app.route("/stories").get(searchStory);
   app.route("/story/title").patch(updateTitle);
   app.route("/story/rating").patch(updateRating);
   app.route("/story/synopsis").patch(updateSynopsis);
@@ -38,7 +45,11 @@ export function routingLikeAPro(app: Application) {
   //TODO delete Story after chapters are deleted
 
   // Chapters routes too
-  app.route("/chapter").get(readChapter).post(createChapter).delete(deleteChapter);
+  app
+    .route("/chapter")
+    .get(readChapter)
+    .post(createChapter)
+    .delete(deleteChapter);
 
   app.route("/chapter/upload").post(upload.single("file"), uploadChapter);
 }

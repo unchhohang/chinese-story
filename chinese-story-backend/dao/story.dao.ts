@@ -10,8 +10,17 @@ class StoryDao {
       await story.save();
       return 200;
     } catch (err: any) {
-      throw new Error(err);
       return 500;
+    }
+  }
+
+  // GET  stories
+  async getStories() {
+    try {
+      const stories: any = await Story.find({});
+      return stories
+    } catch (err) {
+      console.log(err);
     }
   }
 

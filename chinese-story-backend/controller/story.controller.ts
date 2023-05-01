@@ -11,6 +11,11 @@ export async function createStory(req: Request, res: Response) {
   res.sendStatus(story);
 }
 
+export async function getStories(req: Request, res: Response) {
+  const stories: any = await storyDao.getStories();
+  res.send(stories):
+}
+
 export async function updateTitle(req: Request, res: Response) {
   const update = await storyDao.updateTitle(
     String(req.body.storyId),
@@ -57,7 +62,7 @@ export async function removeTag(req: Request, res: Response) {
 }
 
 export async function searchStory(req: Request, res: Response) {
-  const result = await storyDao.searchStory(req.body.title);
+  const result = await storyDao.searchStory(String(req.query.title));
   res.send(result);
 }
 

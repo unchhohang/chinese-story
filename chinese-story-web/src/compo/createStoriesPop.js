@@ -1,9 +1,23 @@
 // Create story pop up
 
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import BeaverBtn from "./BeaverBtn";
 
-export default function () {
+export default function (props) {
+  const [title, setTitle] = useState("");
+
+  function newStory() {
+    axios
+      .post("/story", { title: title })
+      .then((res) => {
+        console.log(res);
+        props.setPopUp(!props.popUp);
+        props.setRefresh(!props.refresh);
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <div>
       <div
@@ -31,15 +45,26 @@ export default function () {
           }}
         >
           <h2>Title </h2>
-          <input style={{ padding: "10px", width:"40vw", marginBottom: "20px"}}></input>
+          <input
+            style={{ padding: "10px", width: "40vw", marginBottom: "20px" }}
+            onChange={(e) => {
+              setTitle(e.target.value);
+            }}
+          ></input>
           <div>
-            <BeaverBtn 
-                name={"OK"}
-                action={()=>{console.log('capibara');}}
+            <BeaverBtn
+              name={"OK"}
+              action={() => {
+                if (title !== "") {
+                  newStory();
+                }
+              }}
             />
-            <BeaverBtn 
-                name={"Cancel"}
-                action={()=>{console.log(`capibara`);}}
+            <BeaverBtn
+              name={"Cancel"}
+              action={() => {
+                props.setPopUp(!props.popUp);
+              }}
             />
           </div>
         </div>

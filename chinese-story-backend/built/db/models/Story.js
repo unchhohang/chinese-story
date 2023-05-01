@@ -32,6 +32,7 @@ const storySchema = new mongoose_1.Schema({
     coverImageUrl: String,
     tags: [String],
     synopsis: String,
+    author: String,
 });
 const StoryModel = mongoose_1.default.model("Story", storySchema);
 exports.default = StoryModel;

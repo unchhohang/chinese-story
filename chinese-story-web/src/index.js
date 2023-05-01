@@ -10,6 +10,7 @@ import CPLoginPage from "./pages/CPLoginPage";
 import StoriesM from "./pages/StoriesM";
 import StoriesMC from "./compo/StoriesMC";
 import StoryPanel from "./compo/StoryPanel";
+import './config/axios.config.js';
 
 // Routing by react router
 const router = createBrowserRouter([

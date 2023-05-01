@@ -16,9 +16,9 @@ export default function Reading() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/chapter", {
+      .get("/chapter", {
         params: {
-          chapterId: "644a242eb51130b91453ef38",
+          chapterId: "644f77e1f95119a7bb542b2d",
         },
       })
       .then((res) => {
