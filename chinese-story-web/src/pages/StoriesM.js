@@ -33,7 +33,7 @@ export default function StoriesM() {
 
   function getStories() {
     axios
-      .get("/story")
+      .get("/stories")
       .then((res) => {
         console.log(`get stories`);
         console.log(res.data);
@@ -45,13 +45,7 @@ export default function StoriesM() {
     return (
       <StoriesMC
         key={i}
-        title={x.title}
-        author={x.author === undefined ? "" : x.author}
-        coverImageUrl={
-          x.coverImageUrl === undefined
-            ? "https://i.pinimg.com/564x/14/e8/d5/14e8d52f45a91b1488dff4d0396e799c.jpg"
-            : x.coverImageUrl
-        }
+        story={x}
       />
     );
   });
@@ -112,7 +106,7 @@ export default function StoriesM() {
                   setSpinner(true);
                   // Search Query
                   axios
-                    .get("/stories", { params: { title: query } })
+                    .get("/stories/search", { params: { title: query } })
                     .then((res) => {
                       setStories(res.data);
                       setSpinner(false);

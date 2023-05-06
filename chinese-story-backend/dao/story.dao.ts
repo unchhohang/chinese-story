@@ -14,11 +14,20 @@ class StoryDao {
     }
   }
 
+  async getStory(storyId: string) {
+    try {
+      const story = await Story.findById(storyId);
+      return story;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   // GET  stories
   async getStories() {
     try {
       const stories: any = await Story.find({});
-      return stories
+      return stories;
     } catch (err) {
       console.log(err);
     }
@@ -66,9 +75,12 @@ class StoryDao {
     }
   }
 
-  async updateImageUrl(storyId: string, imgUrl: string) {
+  async updateImageUrl(storyId: string, imgUrl: string, public_id: string) {
     const filter = { _id: storyId };
-    const update = { coverImageUrl: imgUrl };
+    const update = {
+                    "coverImageUrl.url": imgUrl,
+                    "coverImageUrl.public_id": public_id 
+                     };
     const opts = { new: true };
 
     try {
@@ -102,7 +114,7 @@ class StoryDao {
     try {
       const doc: any = await Story.findById(storyId);
       doc.tags.remove(tag);
-      await doc.save();
+      return await doc.save();
     } catch (err) {
       console.log(err);
     }

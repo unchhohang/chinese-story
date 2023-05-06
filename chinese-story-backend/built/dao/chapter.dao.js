@@ -58,6 +58,17 @@ class ChapterDao {
             }
         });
     }
+    readByStoryId(storyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const chapters = yield Chapter_1.default.find({ storyId: storyId });
+                return chapters;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
     // Delete chapter by chapterId
     delete(chapterId) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -75,7 +86,7 @@ class ChapterDao {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const deleted = yield Chapter_1.default.deleteMany({
-                    storyId: storyId
+                    storyId: storyId,
                 });
                 return deleted;
             }

@@ -29,7 +29,10 @@ const mongoose_1 = __importStar(require("mongoose"));
 const storySchema = new mongoose_1.Schema({
     title: { require: true, type: String, unique: true },
     rating: { type: String, require: true, default: 0 },
-    coverImageUrl: String,
+    coverImageUrl: {
+        url: { type: String, require: true },
+        public_id: { type: String, require: true },
+    },
     tags: [String],
     synopsis: String,
     author: String,

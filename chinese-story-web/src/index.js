@@ -10,7 +10,8 @@ import CPLoginPage from "./pages/CPLoginPage";
 import StoriesM from "./pages/StoriesM";
 import StoriesMC from "./compo/StoriesMC";
 import StoryPanel from "./compo/StoryPanel";
-import './config/axios.config.js';
+import "./config/axios.config.js";
+import axios from "axios";
 
 // Routing by react router
 const router = createBrowserRouter([
@@ -36,8 +37,19 @@ const router = createBrowserRouter([
     element: <StoriesM />,
   },
   {
-    path: "/managment/stories/:story",
+    path: "/managment/stories/:storyId",
     element: <StoryPanel />,
+    loader: async ({ params }) => {
+      let storyId = params.storyId;
+      console.log(`params in loader`);
+      console.log(storyId);
+      let story = await axios.get("/story", {
+        params: {
+          storyId: storyId,
+        },
+      });
+      return story;
+    },
   },
 ]);
 

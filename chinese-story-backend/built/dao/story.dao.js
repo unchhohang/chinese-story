@@ -28,6 +28,17 @@ class StoryDao {
             }
         });
     }
+    getStory(storyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const story = yield Story_1.default.findById(storyId);
+                return story;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
     // GET  stories
     getStories() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -85,10 +96,13 @@ class StoryDao {
             }
         });
     }
-    updateImageUrl(storyId, imgUrl) {
+    updateImageUrl(storyId, imgUrl, public_id) {
         return __awaiter(this, void 0, void 0, function* () {
             const filter = { _id: storyId };
-            const update = { coverImageUrl: imgUrl };
+            const update = {
+                "coverImageUrl.url": imgUrl,
+                "coverImageUrl.public_id": public_id
+            };
             const opts = { new: true };
             try {
                 const updated = yield Story_1.default.findOneAndUpdate(filter, update, opts);
@@ -123,7 +137,7 @@ class StoryDao {
             try {
                 const doc = yield Story_1.default.findById(storyId);
                 doc.tags.remove(tag);
-                yield doc.save();
+                return yield doc.save();
             }
             catch (err) {
                 console.log(err);

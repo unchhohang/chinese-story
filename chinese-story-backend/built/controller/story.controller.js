@@ -13,9 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteStory = exports.searchStory = exports.removeTag = exports.addTag = exports.updateImageUrl = exports.updateSynopsis = exports.updateRating = exports.updateTitle = exports.getStories = exports.createStory = void 0;
+exports.deleteStory = exports.searchStory = exports.removeTag = exports.addTag = exports.uploadImage = exports.updateSynopsis = exports.updateRating = exports.updateTitle = exports.getChapterByStoryId = exports.getStories = exports.getStory = exports.createStory = void 0;
 const chapter_dao_1 = __importDefault(require("../dao/chapter.dao"));
 const story_dao_1 = __importDefault(require("../dao/story.dao"));
+const cloudianry = require("cloudinary").v2;
+cloudianry.config({
+    cloud_name: "dikro85u1",
+    api_key: "744546673993993",
+    api_secret: "RBloFuu-0GwmWoNX1srGeH-Kl-4",
+});
 // Create story title
 function createStory(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -24,6 +30,13 @@ function createStory(req, res) {
     });
 }
 exports.createStory = createStory;
+function getStory(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const story = yield story_dao_1.default.getStory(String(req.query.storyId));
+        res.send(story);
+    });
+}
+exports.getStory = getStory;
 function getStories(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const stories = yield story_dao_1.default.getStories();
@@ -31,6 +44,13 @@ function getStories(req, res) {
     });
 }
 exports.getStories = getStories;
+function getChapterByStoryId(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const chapters = yield chapter_dao_1.default.readByStoryId(String(req.query.storyId));
+        res.send(chapters);
+    });
+}
+exports.getChapterByStoryId = getChapterByStoryId;
 function updateTitle(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const update = yield story_dao_1.default.updateTitle(String(req.body.storyId), String(req.body.title));
@@ -52,13 +72,34 @@ function updateSynopsis(req, res) {
     });
 }
 exports.updateSynopsis = updateSynopsis;
-function updateImageUrl(req, res) {
+// upload image
+function uploadImage(req, res) {
+    var _a;
     return __awaiter(this, void 0, void 0, function* () {
-        const update = yield story_dao_1.default.updateImageUrl(String(req.body.storyId), req.body.coverImageUrl);
-        res.send(update);
+        try {
+            const storyId = req.body.storyId;
+            const story = yield story_dao_1.default.getStory(storyId);
+            const publicId = story.coverImageUrl.public_id;
+            // delete old image to replace with new one
+            // this may be a bad code . For skipping things
+            cloudianry.uploader.destroy(publicId, (res) => {
+                console.log(res);
+            });
+            console.log(`after destroy`);
+            const result = yield cloudianry.uploader.upload((_a = req.file) === null || _a === void 0 ? void 0 : _a.path, {
+                folder: "chinese-story",
+            });
+            // console.log(`result of cloudinary upload`);
+            // console.log(result);
+            const update = yield story_dao_1.default.updateImageUrl(storyId, result.secure_url, result.public_id);
+            res.send(update);
+        }
+        catch (err) {
+            console.log(err);
+        }
     });
 }
-exports.updateImageUrl = updateImageUrl;
+exports.uploadImage = uploadImage;
 function addTag(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const update = yield story_dao_1.default.pushTag(String(req.body.storyId), req.body.tag);
@@ -68,7 +109,7 @@ function addTag(req, res) {
 exports.addTag = addTag;
 function removeTag(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
-        const update = yield story_dao_1.default.removeTag(String(req.body.storyId), req.body.tag);
+        const update = yield story_dao_1.default.removeTag(String(req.query.storyId), String(req.query.tag));
         res.send(update);
     });
 }

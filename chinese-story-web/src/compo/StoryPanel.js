@@ -1,44 +1,148 @@
 // Story Main control panel
 
+import axios from "axios";
 import React, { useRef, useState } from "react";
-import DeleteWarn from "./DeleteWarn";
+import { useLoaderData, useLocation } from "react-router-dom";
 import PeachBtn from "./PeachBtn";
 import TableContentM from "./TableContentM";
-import TagsPop from "./TagsPop";
+import TagBtn from "./TagBtn";
+import { GridLoader } from "react-spinners";
 
 export default function StoryPanel() {
+  // loader data for story
+  const { data } = useLoaderData();
+  const [story, setStory] = useState(data);
+
   // State hooks for title
   // when state disable input field is locked
   // button is named as edit
-  const [titleValue, setTitleValue] = useState("");
+  const [titleValue, setTitleValue] = useState(story.title);
   const [titleDisable, setTitleDisable] = useState(true);
 
   // State hook for synopsis
-  const [synopsis, setSynopsis] = useState("");
+  const [synopsis, setSynopsis] = useState(
+    story.synopsis === undefined ? "" : story.synopsis
+  );
   const [synopsisDisable, setSynopsisDisable] = useState(true);
 
   // State hook for rating
-  const [rating, setRating] = useState(2);
+  const [rating, setRating] = useState(story.rating);
 
   // state for tags pop up
-  const [tagPopState, setTagPopState] = useState(false);
+  // const [tagPopState, setTagPopState] = useState(false);
 
   // tags
   const tags = ["action", "mystrey", "comedy", "romance"];
-  const [tagged, setTagged] = useState([]);
+  // selected tag
+  const [tagged, setTagged] = useState(story.tags);
+  const [selectTag, setSelectTag] = useState(tags[0]);
+
+  // cover image
+  const [imageFile, setImageFile] = useState(null);
+  // image grid spinner
+  const [imgUploadSpinner, setImgUploadSpinner] = useState(false);
 
   // options for tags
   const tagOptions = tags.map((i) => {
     return <option>{i}</option>;
   });
 
+  // image upload section
+  // here so that I can be creative
+  // in image load rendering
+  const imageSection = (
+    <>
+      <div
+        style={{
+          display: "table-cell",
+          verticalAlign: "middle",
+        }}
+      >
+        <img
+          src={
+            story.coverImageUrl?.url === undefined
+              ? "https://i.pinimg.com/originals/4d/26/51/4d26510d64f0c71ec38abf47d0087101.jpg"
+              : story.coverImageUrl.url
+          }
+          height={"180vh"}
+          style={{
+            margin: "10px",
+            padding: "10px",
+          }}
+        ></img>
+      </div>
+      <div
+        style={{
+          display: "table-cell",
+          verticalAlign: "middle",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+          }}
+        >
+          <span
+            style={{
+              margin: "25px",
+            }}
+          >
+            <input
+              type="file"
+              accept="image/png, image/gif, image/jpeg"
+              onChange={(e) => {
+                setImageFile(e.target);
+              }}
+            />
+          </span>
+          <PeachBtn
+            name={"upload"}
+            action={() => {
+              coverImageUpload();
+            }}
+          />
+        </div>
+      </div>
+    </>
+  );
+
+  // render tags
+  const renderTags = tagged.map((x, i) => {
+    return (
+      <TagBtn
+        key={i}
+        storyId={story._id}
+        name={x}
+        tagged={tagged}
+        setTagged={setTagged}
+      />
+    );
+  });
+
   function onTitleEditClicked() {
     if (titleDisable) {
       setTitleDisable(!titleDisable);
+
       return;
     }
     setTitleDisable(!titleDisable);
-    // save somewhere may be TODO
+
+    console.log(`title value `);
+    console.log(titleValue);
+
+    // save to db
+    axios
+      .patch("/story/title", {
+        storyId: story._id,
+        title: titleValue,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     return;
   }
 
@@ -47,35 +151,62 @@ export default function StoryPanel() {
       setSynopsisDisable(!synopsisDisable);
       return;
     }
+    axios
+      .patch("/story/synopsis", {
+        storyId: story._id,
+        synopsis: synopsis,
+      })
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
     setSynopsisDisable(!synopsisDisable);
     return;
+  }
+
+  function coverImageUpload() {
+    // initate load spinner
+    setImgUploadSpinner(true);
+    const formData = new FormData();
+    formData.append("storyId", story._id);
+    formData.append("image", imageFile.files[0]);
+
+    axios
+      .patch("/story/image", formData, {
+        headers: { "content-type": "multipart/form-data" },
+      })
+      .then((res) => {
+        console.log(res);
+        console.log(`spinner should be closed`);
+        setStory(res.data);
+        setImgUploadSpinner(false);
+      })
+      .catch((err) => console.log(err));
   }
 
   return (
     <div>
       {/* create tags popup */}
-      {tagPopState && (
+      {/* {tagPopState && (
         <div>
           <TagsPop />
         </div>
-      )}
+      )} */}
 
       <div
-        style={
-          tagPopState
-            ? {
-                display: "table",
-                margin: "10px",
-                padding: "10px",
-                pointerEvents: "none",
-              }
-            : {
-                display: "table",
-                margin: "10px",
-                padding: "10px",
-                pointerEvents: "auto",
-              }
-        }
+      // style={
+      //   tagPopState
+      //     ? {
+      //         display: "table",
+      //         margin: "10px",
+      //         padding: "10px",
+      //         pointerEvents: "none",
+      //       }
+      //     : {
+      //         display: "table",
+      //         margin: "10px",
+      //         padding: "10px",
+      //         pointerEvents: "auto",
+      //       }
+      // }
       >
         <div style={{ display: "table-row" }}>
           <div style={{ display: "table-cell" }}>
@@ -104,7 +235,7 @@ export default function StoryPanel() {
             {/* Btn comp for title edit */}
             <PeachBtn
               name={titleDisable ? "Edit" : "save"}
-              action={() => {
+              action={(e) => {
                 onTitleEditClicked();
               }}
             />
@@ -142,8 +273,13 @@ export default function StoryPanel() {
                 padding: "6px",
               }}
               value={rating}
-              onChange={(e) => {
+              onChange={async (e) => {
                 setRating(e.target.value);
+                // save change to db
+                await axios.patch("/story/rating", {
+                  storyId: story._id,
+                  rating: e.target.value,
+                });
               }}
               onKeyDown={(e) => {
                 e.preventDefault();
@@ -188,9 +324,8 @@ export default function StoryPanel() {
               verticalAlign: "middle",
             }}
           >
-            <span>#Action</span>
-            <span>#Action</span>
-            <span>#Action</span>
+            {/* list of tags rendered */}
+            {renderTags}
           </div>
           <div
             style={{
@@ -212,15 +347,29 @@ export default function StoryPanel() {
                   style={{
                     marginTop: "25px",
                   }}
+                  onChange={(e) => {
+                    setSelectTag(e.target.value);
+                  }}
                 >
                   {tagOptions}
                 </select>
               </span>
               <span>
                 <PeachBtn
-                  name={"Add"}
+                  name={"add-tag"}
                   action={() => {
-                    console.log(`pop up TODO`);
+                    // add tag to db
+                    // then render tag list
+
+                    axios
+                      .patch("/story/tag", {
+                        storyId: story._id,
+                        tag: selectTag,
+                      })
+                      .then((res) => {
+                        setTagged(res.data.tags);
+                      })
+                      .catch((err) => console.log(err));
                   }}
                 />
               </span>
@@ -247,47 +396,20 @@ export default function StoryPanel() {
               Cover Image
             </h4>
           </div>
-          <div
-            style={{
-              display: "table-cell",
-              verticalAlign: "middle",
-            }}
-          >
-            <img
-              src="https://i.pinimg.com/474x/8b/a0/91/8ba0911243605e4072e8b69e52079e1a.jpg"
-              height={"180vh"}
-              style={{
-                margin: "10px",
-                padding: "10px",
-              }}
-            ></img>
-          </div>
-          <div
-            style={{
-              display: "table-cell",
-              verticalAlign: "middle",
-            }}
-          >
+          {imgUploadSpinner ? (
             <div
               style={{
+                margin: "10px",
+                padding: "30px",
                 display: "flex",
+                justifyContent: "center",
               }}
             >
-              <span
-                style={{
-                  margin: "25px",
-                }}
-              >
-                <input type="file" accept="image/png, image/gif, image/jpeg" />
-              </span>
-              <PeachBtn
-                name={"upload"}
-                action={() => {
-                  console.log("TODO upload");
-                }}
-              />
+              <GridLoader color="#F4B886" />
             </div>
-          </div>
+          ) : (
+            imageSection
+          )}
         </div>
         <div
           style={{

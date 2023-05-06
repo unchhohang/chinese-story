@@ -12,13 +12,15 @@ import {
   addTag,
   createStory,
   deleteStory,
+  getChapterByStoryId,
   getStories,
+  getStory,
   removeTag,
   searchStory,
-  updateImageUrl,
   updateRating,
   updateSynopsis,
   updateTitle,
+  uploadImage,
 } from "../controller/story.controller";
 
 // config multer for suffix
@@ -33,13 +35,14 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 export function routingLikeAPro(app: Application) {
-  app.route("/story").get(getStories).post(createStory).delete(deleteStory);
+  app.route("/story").get(getStory).post(createStory).delete(deleteStory);
 
-  app.route("/stories").get(searchStory);
+  app.route("/stories").get(getStories);
+  app.route("/stories/search").get(searchStory);
   app.route("/story/title").patch(updateTitle);
   app.route("/story/rating").patch(updateRating);
   app.route("/story/synopsis").patch(updateSynopsis);
-  app.route("/story/image").patch(updateImageUrl);
+  app.route("/story/image").patch(upload.single("image"), uploadImage);
   app.route("/story/tag").patch(addTag).delete(removeTag);
 
   //TODO delete Story after chapters are deleted
@@ -51,5 +54,6 @@ export function routingLikeAPro(app: Application) {
     .post(createChapter)
     .delete(deleteChapter);
 
+  app.route("/chapter/stories").get(getChapterByStoryId);
   app.route("/chapter/upload").post(upload.single("file"), uploadChapter);
 }

@@ -40,29 +40,36 @@ class ChapterDao {
     }
   }
 
+  async readByStoryId(storyId: string) {
+    try {
+      const chapters = await Chapter.find({ storyId: storyId });
+      return chapters;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   // Delete chapter by chapterId
   async delete(chapterId: string) {
     try {
       const deleted: any = await Chapter.findByIdAndRemove(chapterId);
-      return deleted
+      return deleted;
     } catch (err) {
       console.log(err);
     }
   }
 
   // Delete chpaters by storyId
-  async deleteChapters(storyId: string){
-    try{
+  async deleteChapters(storyId: string) {
+    try {
       const deleted: any = await Chapter.deleteMany({
-        storyId: storyId
+        storyId: storyId,
       });
       return deleted;
-    }catch(err){
+    } catch (err) {
       console.log(err);
-      
     }
   }
-
 }
 
 export default new ChapterDao();

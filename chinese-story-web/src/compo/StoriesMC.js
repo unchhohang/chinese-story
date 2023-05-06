@@ -5,10 +5,18 @@ import { useNavigate } from "react-router-dom";
 
 export default function (props) {
   const navigate = useNavigate();
+  const story = props.story;
+  const title = story.title;
+  const author = story.author === undefined ? "" : story.author;
+  const imageUrl =
+    story.coverImageUrl?.url === undefined
+      ? "https://i.pinimg.com/564x/14/e8/d5/14e8d52f45a91b1488dff4d0396e799c.jpg"
+      : story.coverImageUrl.url;
 
   function onStoriesCardClicked() {
+    let url = "/managment/stories/" + story._id;
     // Last url section need to be set dynamic
-    navigate("/managment/stories/dynamic");
+    navigate(url);
   }
 
   return (
@@ -26,12 +34,12 @@ export default function (props) {
       }}
     >
       <div>
-        <img src={props.coverImageUrl} height={"200vh"} width={"150vw"}></img>
+        <img src={imageUrl} height={"200vh"} width={"150vw"}></img>
       </div>
       <div>
         <div>
-          <h2>&nbsp; {props.title}</h2>
-          <h5>&nbsp;&nbsp;&nbsp; By: {props.author}</h5>
+          <h2>&nbsp; {title}</h2>
+          <h5>&nbsp;&nbsp;&nbsp; By: {author}</h5>
         </div>
       </div>
     </div>
