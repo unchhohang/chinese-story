@@ -3,9 +3,13 @@
 import axios from "axios";
 import React, { useState } from "react";
 import PeachBtn from "./PeachBtn";
+import { BeatLoader } from "react-spinners";
 
 export default function ChapterRow(props) {
   const [fileUpload, setFileUpload] = useState("");
+  const [loader, setLoader] = useState(false);
+
+  if (loader) return <BeatLoader />;
 
   return (
     <div
@@ -33,6 +37,7 @@ export default function ChapterRow(props) {
         <PeachBtn
           name={"upload"}
           action={() => {
+            setLoader(true);
             // Protection in case of empty
             if (fileUpload === "") {
               console.log("Nothing is there bro..");
@@ -40,12 +45,16 @@ export default function ChapterRow(props) {
             }
             const formData = new FormData();
             formData.append("file", fileUpload.files[0]);
+            formData.append("chapterId", props.chapterId);
 
             axios
               .post("http://localhost:5000/chapter/upload", formData, {
                 headers: { "content-type": "multipart/form-data" },
               })
-              .then((data) => console.log(data))
+              .then((data) => {
+                console.log(data);
+                setLoader(false);
+              })
               .catch((err) => console.log(err));
           }}
         />
@@ -55,6 +64,7 @@ export default function ChapterRow(props) {
           name={"Delete"}
           action={() => {
             props.setChapterD(!props.chapterD);
+            props.setDeleteId(props.chapterId);
           }}
         />
       </div>

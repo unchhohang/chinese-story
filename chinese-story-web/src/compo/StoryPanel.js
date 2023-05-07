@@ -7,6 +7,7 @@ import PeachBtn from "./PeachBtn";
 import TableContentM from "./TableContentM";
 import TagBtn from "./TagBtn";
 import { GridLoader } from "react-spinners";
+import StoryDeletePop from "./StoryDeletePop";
 
 export default function StoryPanel() {
   // loader data for story
@@ -41,6 +42,9 @@ export default function StoryPanel() {
   const [imageFile, setImageFile] = useState(null);
   // image grid spinner
   const [imgUploadSpinner, setImgUploadSpinner] = useState(false);
+
+  // story delete pop display
+  const [storyDPop, setStoryDPop] = useState(false);
 
   // options for tags
   const tagOptions = tags.map((i) => {
@@ -184,30 +188,10 @@ export default function StoryPanel() {
 
   return (
     <div>
-      {/* create tags popup */}
-      {/* {tagPopState && (
-        <div>
-          <TagsPop />
-        </div>
-      )} */}
-
-      <div
-      // style={
-      //   tagPopState
-      //     ? {
-      //         display: "table",
-      //         margin: "10px",
-      //         padding: "10px",
-      //         pointerEvents: "none",
-      //       }
-      //     : {
-      //         display: "table",
-      //         margin: "10px",
-      //         padding: "10px",
-      //         pointerEvents: "auto",
-      //       }
-      // }
-      >
+      {storyDPop && (
+        <StoryDeletePop storyId={story._id} setStoryDPop={setStoryDPop} />
+      )}
+      <div style={{ pointerEvents : storyDPop && "none"}}>
         <div style={{ display: "table-row" }}>
           <div style={{ display: "table-cell" }}>
             <h4 style={{ textAlign: "center" }}>Title </h4>
@@ -461,7 +445,7 @@ export default function StoryPanel() {
           </div>
         </div>
       </div>
-      <TableContentM />
+      <TableContentM story={story} />
       <div
         style={{
           display: "flex",
@@ -470,15 +454,9 @@ export default function StoryPanel() {
         }}
       >
         <PeachBtn
-          name="Done"
-          action={() => {
-            console.log(`done`);
-          }}
-        />
-        <PeachBtn
           name={"Delete"}
           action={() => {
-            console.log("Delete");
+            setStoryDPop(true);
           }}
         />
       </div>

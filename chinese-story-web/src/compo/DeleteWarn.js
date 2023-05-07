@@ -1,10 +1,11 @@
 // Pop up component for delete warning
 // Password is abrakadabra
 
+import axios from "axios";
 import React, { useState } from "react";
 import PeachBtn from "./PeachBtn";
 
-export default function () {
+export default function (props) {
   const [value, setValue] = useState("");
   return (
     <div
@@ -40,13 +41,34 @@ export default function () {
         <PeachBtn
           name={"Delete"}
           action={() => {
-            console.log("should delete");
+            props.setLoader(!props.loader);
+
+            // making it difficult to delete
+            if (value !== "abrakadabra") {
+              props.setLoader(false);
+              return;
+            }
+
+            console.log(`axios is run irrespective of abrakadabra`);
+            axios
+              .delete("chapter", {
+                params: { chapterId: props.deleteId },
+              })
+              .then((res) => {
+                setValue("");
+                props.setDeleteId("");
+                props.setChapterD(!props.chapterD);
+                props.setLoader(false);
+              })
+              .catch((err) => console.log(err));
           }}
         />
         <PeachBtn
           name={"Cancel"}
           action={() => {
-            console.log("should Cancel this pop");
+            setValue("");
+            props.setDeleteId("");
+            props.setChapterD(!props.chapterD);
           }}
         />
       </div>
