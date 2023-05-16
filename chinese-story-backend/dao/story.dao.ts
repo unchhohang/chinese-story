@@ -23,6 +23,16 @@ class StoryDao {
     }
   }
 
+  // Get stories by tags category
+  async getStoriesByCat(tag: string) {
+    try {
+      const stories = await Story.find({ tags: tag });
+      return stories
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   // GET  stories
   async getStories() {
     try {
@@ -44,6 +54,20 @@ class StoryDao {
       return updated;
     } catch (err: any) {
       throw new Error(err);
+    }
+  }
+
+  // update arthur
+  async updateAuthor(storyId: string, newAutor: string) {
+    const filter = { _id: storyId };
+    const update = { author: newAutor };
+    const opts = { new: true };
+
+    try {
+      const updated: any = await Story.findOneAndUpdate(filter, update, opts);
+      return updated;
+    } catch (err: any) {
+      console.log(err);
     }
   }
 
@@ -78,9 +102,9 @@ class StoryDao {
   async updateImageUrl(storyId: string, imgUrl: string, public_id: string) {
     const filter = { _id: storyId };
     const update = {
-                    "coverImageUrl.url": imgUrl,
-                    "coverImageUrl.public_id": public_id 
-                     };
+      "coverImageUrl.url": imgUrl,
+      "coverImageUrl.public_id": public_id,
+    };
     const opts = { new: true };
 
     try {
@@ -106,6 +130,19 @@ class StoryDao {
       await doc.save();
       return doc;
     } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async updateStatus(storyId: string, newStatus: string) {
+    const filter = { _id: storyId };
+    const update = { status: newStatus };
+    const opts = { new: true, runValidators: true };
+
+    try {
+      const updated: any = await Story.findOneAndUpdate(filter, update, opts);
+      return updated;
+    } catch (err: any) {
       console.log(err);
     }
   }

@@ -36,6 +36,17 @@ const storySchema = new mongoose_1.Schema({
     tags: [String],
     synopsis: String,
     author: String,
+    status: {
+        type: String,
+        enum: ["onGoing", "complete"],
+        default: "onGoing",
+        validate: {
+            validator: function (value) {
+                return value === "onGoing" || value === "complete";
+            },
+            message: "Invalid status value",
+        },
+    },
 });
 const StoryModel = mongoose_1.default.model("Story", storySchema);
 exports.default = StoryModel;

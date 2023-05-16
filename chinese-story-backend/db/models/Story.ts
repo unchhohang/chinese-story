@@ -13,6 +13,17 @@ const storySchema = new Schema({
   tags: [String],
   synopsis: String,
   author: String,
+  status: {
+    type: String,
+    enum: ["onGoing", "complete"],
+    default: "onGoing",
+    validate: {
+      validator: function (value: any) {
+        return value === "onGoing" || value === "complete";
+      },
+      message: "Invalid status value",
+    },
+  },
 });
 
 const StoryModel = mongoose.model("Story", storySchema);

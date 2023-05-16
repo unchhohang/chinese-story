@@ -8,6 +8,7 @@ import TableContentM from "./TableContentM";
 import TagBtn from "./TagBtn";
 import { GridLoader } from "react-spinners";
 import StoryDeletePop from "./StoryDeletePop";
+import CustomToggleBtn from "./CustomToggleBtn";
 
 export default function StoryPanel() {
   // loader data for story
@@ -19,6 +20,12 @@ export default function StoryPanel() {
   // button is named as edit
   const [titleValue, setTitleValue] = useState(story.title);
   const [titleDisable, setTitleDisable] = useState(true);
+
+  // Author value and disables
+  const [authorValue, setAuthorValue] = useState(
+    story.author === undefined ? "" : story.author
+  );
+  const [authorDisable, setAuthorDisable] = useState(true);
 
   // State hook for synopsis
   const [synopsis, setSynopsis] = useState(
@@ -45,6 +52,12 @@ export default function StoryPanel() {
 
   // story delete pop display
   const [storyDPop, setStoryDPop] = useState(false);
+
+  // story status ['onGoing' , 'complete']
+  const [storyStatus, setStoryStatus] = useState(story.status);
+  const [checked, setChecked] = useState(
+    story.status === "onGoing" ? false : true
+  );
 
   // options for tags
   const tagOptions = tags.map((i) => {
@@ -150,6 +163,21 @@ export default function StoryPanel() {
     return;
   }
 
+  function onAuthorEditClicked() {
+    if (authorDisable) {
+      setAuthorDisable(!authorDisable);
+      return;
+    }
+    setAuthorDisable(!authorDisable);
+    axios
+      .patch("/story/author", {
+        storyId: story._id,
+        author: authorValue,
+      })
+      .then((res) => console.log(res.data))
+      .catch((err) => console.log(err));
+  }
+
   function onSynopsisEditClicked() {
     if (synopsisDisable) {
       setSynopsisDisable(!synopsisDisable);
@@ -186,12 +214,25 @@ export default function StoryPanel() {
       .catch((err) => console.log(err));
   }
 
+  // status change from "onGoing" <--> "complete" vice versa
+  function changeStatus(status) {
+    axios
+      .patch("/story/status", {
+        storyId: story._id,
+        status: status,
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => console.log(err));
+  }
+
   return (
     <div>
       {storyDPop && (
         <StoryDeletePop storyId={story._id} setStoryDPop={setStoryDPop} />
       )}
-      <div style={{ pointerEvents : storyDPop && "none"}}>
+      <div style={{ pointerEvents: storyDPop && "none" }}>
         <div style={{ display: "table-row" }}>
           <div style={{ display: "table-cell" }}>
             <h4 style={{ textAlign: "center" }}>Title </h4>
@@ -221,6 +262,42 @@ export default function StoryPanel() {
               name={titleDisable ? "Edit" : "save"}
               action={(e) => {
                 onTitleEditClicked();
+              }}
+            />
+          </div>
+        </div>
+
+        {/* Here author part */}
+
+        <div style={{ display: "table-row" }}>
+          <div style={{ display: "table-cell" }}>
+            <h4 style={{ textAlign: "center" }}>Author</h4>
+          </div>
+
+          <div style={{ display: "table-cell" }}>
+            <input
+              disabled={authorDisable}
+              style={{
+                padding: "6px",
+                margin: "10px",
+                width: "40vw",
+              }}
+              value={authorValue}
+              onChange={(e) => {
+                setAuthorValue(e.target.value);
+              }}
+            ></input>
+          </div>
+          <div
+            style={{
+              display: "table-cell",
+            }}
+          >
+            {/* Btn comp for title edit */}
+            <PeachBtn
+              name={authorDisable ? "Edit" : "save"}
+              action={(e) => {
+                onAuthorEditClicked();
               }}
             />
           </div>
@@ -443,6 +520,64 @@ export default function StoryPanel() {
               }}
             />
           </div>
+        </div>
+        <div
+          style={{
+            display: "table-row",
+          }}
+        >
+          <div
+            style={{
+              display: "table-cell",
+              verticalAlign: "middle",
+            }}
+          >
+            <h4
+              style={{
+                textAlign: "center",
+              }}
+            >
+              Status
+            </h4>
+          </div>
+          <div
+            style={{
+              display: "table-cell",
+              verticalAlign: "middle",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+              }}
+            >
+              <span
+                style={{
+                  position: "relative",
+                  top: "12px",
+                }}
+              >
+                <CustomToggleBtn
+                  checked={checked}
+                  onClicked={() => {
+                    setChecked(!checked);
+                    let newStatus = checked ? "onGoing" : "complete";
+                    changeStatus(newStatus);
+                  }}
+                />
+              </span>
+              <span style={{ marginLeft: "10px" }}>
+                <h4>Complete</h4>
+              </span>
+            </div>
+          </div>
+          <div
+            style={{
+              display: "table-cell",
+              verticalAlign: "middle",
+            }}
+          ></div>
         </div>
       </div>
       <TableContentM story={story} />

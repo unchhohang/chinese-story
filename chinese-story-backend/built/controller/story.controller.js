@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteStory = exports.searchStory = exports.removeTag = exports.addTag = exports.uploadImage = exports.updateSynopsis = exports.updateRating = exports.updateTitle = exports.getChapterByStoryId = exports.getStories = exports.getStory = exports.createStory = void 0;
+exports.deleteStory = exports.searchStory = exports.removeTag = exports.addTag = exports.uploadImage = exports.updateStatus = exports.updateSynopsis = exports.updateRating = exports.updateAuthor = exports.updateTitle = exports.getChapterByStoryId = exports.getStories = exports.getStoriesByCat = exports.getStory = exports.createStory = void 0;
 const chapter_dao_1 = __importDefault(require("../dao/chapter.dao"));
 const story_dao_1 = __importDefault(require("../dao/story.dao"));
 const cloudianry = require("cloudinary").v2;
@@ -37,6 +37,13 @@ function getStory(req, res) {
     });
 }
 exports.getStory = getStory;
+function getStoriesByCat(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const stories = yield story_dao_1.default.getStoriesByCat(String(req.query.tag));
+        res.send(stories);
+    });
+}
+exports.getStoriesByCat = getStoriesByCat;
 function getStories(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const stories = yield story_dao_1.default.getStories();
@@ -58,6 +65,13 @@ function updateTitle(req, res) {
     });
 }
 exports.updateTitle = updateTitle;
+function updateAuthor(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const update = yield story_dao_1.default.updateAuthor(String(req.body.storyId), String(req.body.author));
+        res.send(update);
+    });
+}
+exports.updateAuthor = updateAuthor;
 function updateRating(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         const update = yield story_dao_1.default.updateRating(String(req.body.storyId), req.body.rating);
@@ -72,6 +86,14 @@ function updateSynopsis(req, res) {
     });
 }
 exports.updateSynopsis = updateSynopsis;
+// updated story status ['onGoing' , 'complete']
+function updateStatus(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const update = yield story_dao_1.default.updateStatus(String(req.body.storyId), req.body.status);
+        res.send(update);
+    });
+}
+exports.updateStatus = updateStatus;
 // upload image
 function uploadImage(req, res) {
     var _a;

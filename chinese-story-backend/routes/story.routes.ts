@@ -14,10 +14,13 @@ import {
   deleteStory,
   getChapterByStoryId,
   getStories,
+  getStoriesByCat,
   getStory,
   removeTag,
   searchStory,
+  updateAuthor,
   updateRating,
+  updateStatus,
   updateSynopsis,
   updateTitle,
   uploadImage,
@@ -39,11 +42,14 @@ export function routingLikeAPro(app: Application) {
 
   app.route("/stories").get(getStories);
   app.route("/stories/search").get(searchStory);
+  app.route("/stories/tag").get(getStoriesByCat);
   app.route("/story/title").patch(updateTitle);
+  app.route("/story/author").patch(updateAuthor);
   app.route("/story/rating").patch(updateRating);
   app.route("/story/synopsis").patch(updateSynopsis);
   app.route("/story/image").patch(upload.single("image"), uploadImage);
   app.route("/story/tag").patch(addTag).delete(removeTag);
+  app.route("/story/status").patch(updateStatus);
 
   //TODO delete Story after chapters are deleted
 

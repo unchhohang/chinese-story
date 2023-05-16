@@ -21,11 +21,14 @@ function routingLikeAPro(app) {
     app.route("/story").get(story_controller_1.getStory).post(story_controller_1.createStory).delete(story_controller_1.deleteStory);
     app.route("/stories").get(story_controller_1.getStories);
     app.route("/stories/search").get(story_controller_1.searchStory);
+    app.route("/stories/tag").get(story_controller_1.getStoriesByCat);
     app.route("/story/title").patch(story_controller_1.updateTitle);
+    app.route("/story/author").patch(story_controller_1.updateAuthor);
     app.route("/story/rating").patch(story_controller_1.updateRating);
     app.route("/story/synopsis").patch(story_controller_1.updateSynopsis);
     app.route("/story/image").patch(upload.single("image"), story_controller_1.uploadImage);
     app.route("/story/tag").patch(story_controller_1.addTag).delete(story_controller_1.removeTag);
+    app.route("/story/status").patch(story_controller_1.updateStatus);
     //TODO delete Story after chapters are deleted
     // Chapters routes too
     app

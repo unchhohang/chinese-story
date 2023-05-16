@@ -21,8 +21,6 @@
   justify-content: flex-end;
 }
 
-
-
 .categoryBtn {
   border-style: hidden;
   background-color: #a18276;
@@ -41,17 +39,22 @@
   display: none;
 }
 
-.category:hover .genresType{
+.category:hover .genresType {
   display: block;
-
 }
 
-
 li {
+  cursor: pointer;
   list-style-type: none;
   padding: 10px;
   font-family: Inter;
   background-color: #a18276;
   color: #fffcfc;
   font-size: 1em;
+  position: relative;
+  z-index: 1;
+}
+
+li:hover {
+  background-color: black;
 }

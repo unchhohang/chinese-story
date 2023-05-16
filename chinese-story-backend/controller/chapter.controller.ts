@@ -3,6 +3,7 @@
 import { Request, Response } from "express";
 import chapterDao from "../dao/chapter.dao";
 import textract from "textract";
+import * as fs from "node:fs/promises";
 
 export async function createChapter(req: Request, res: Response) {
   const chapter = await chapterDao.createChapter(
@@ -26,6 +27,10 @@ export async function uploadChapter(req: Request, res: Response) {
       } else {
         // Save chapter content to DB
         await chapterDao.uploadChapter(chapterId, text);
+
+        // Delete read file.
+        await fs.unlink(filePath);
+        console.log(`file deleted on path : ${filePath}`);
       }
     }
   );

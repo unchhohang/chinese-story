@@ -23,6 +23,11 @@ export async function getStory(req: Request, res: Response) {
   res.send(story);
 }
 
+export async function getStoriesByCat(req: Request, res: Response) {
+  const stories: any = await storyDao.getStoriesByCat(String(req.query.tag));
+  res.send(stories);
+}
+
 export async function getStories(req: Request, res: Response) {
   const stories: any = await storyDao.getStories();
   res.send(stories);
@@ -43,6 +48,14 @@ export async function updateTitle(req: Request, res: Response) {
   res.send(update);
 }
 
+export async function updateAuthor(req: Request, res: Response) {
+  const update = await storyDao.updateAuthor(
+    String(req.body.storyId),
+    String(req.body.author)
+  );
+  res.send(update);
+}
+
 export async function updateRating(req: Request, res: Response) {
   const update = await storyDao.updateRating(
     String(req.body.storyId),
@@ -55,6 +68,15 @@ export async function updateSynopsis(req: Request, res: Response) {
   const update = await storyDao.updateSynopsis(
     String(req.body.storyId),
     req.body.synopsis
+  );
+  res.send(update);
+}
+
+// updated story status ['onGoing' , 'complete']
+export async function updateStatus(req: Request, res: Response) {
+  const update = await storyDao.updateStatus(
+    String(req.body.storyId),
+    req.body.status
   );
   res.send(update);
 }
@@ -72,7 +94,7 @@ export async function uploadImage(req: Request, res: Response) {
     cloudianry.uploader.destroy(publicId, (res: any) => {
       console.log(res);
     });
-    
+
     console.log(`after destroy`);
 
     const result = await cloudianry.uploader.upload(req.file?.path, {

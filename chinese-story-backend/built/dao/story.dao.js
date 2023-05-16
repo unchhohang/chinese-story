@@ -39,6 +39,18 @@ class StoryDao {
             }
         });
     }
+    // Get stories by tags category
+    getStoriesByCat(tag) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const stories = yield Story_1.default.find({ tags: tag });
+                return stories;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
     // GET  stories
     getStories() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -63,6 +75,21 @@ class StoryDao {
             }
             catch (err) {
                 throw new Error(err);
+            }
+        });
+    }
+    // update arthur
+    updateAuthor(storyId, newAutor) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filter = { _id: storyId };
+            const update = { author: newAutor };
+            const opts = { new: true };
+            try {
+                const updated = yield Story_1.default.findOneAndUpdate(filter, update, opts);
+                return updated;
+            }
+            catch (err) {
+                console.log(err);
             }
         });
     }
@@ -101,7 +128,7 @@ class StoryDao {
             const filter = { _id: storyId };
             const update = {
                 "coverImageUrl.url": imgUrl,
-                "coverImageUrl.public_id": public_id
+                "coverImageUrl.public_id": public_id,
             };
             const opts = { new: true };
             try {
@@ -126,6 +153,20 @@ class StoryDao {
                 doc.tags.push(tag);
                 yield doc.save();
                 return doc;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    updateStatus(storyId, newStatus) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filter = { _id: storyId };
+            const update = { status: newStatus };
+            const opts = { new: true, runValidators: true };
+            try {
+                const updated = yield Story_1.default.findOneAndUpdate(filter, update, opts);
+                return updated;
             }
             catch (err) {
                 console.log(err);

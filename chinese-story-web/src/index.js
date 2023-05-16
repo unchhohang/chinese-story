@@ -18,6 +18,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    loader: async () => {
+      let res = await axios.get("/stories");
+      return res.data;
+    },
     errorElement: <ErrorPage />,
   },
   {
