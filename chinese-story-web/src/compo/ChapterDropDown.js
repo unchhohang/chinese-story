@@ -1,37 +1,62 @@
 // Chapters Drop down
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "../css/chapterDropDown.module.css";
 import PeachBtn from "./PeachBtn";
 
-export default function ChapterDropDown() {
-  const chapters = ["chapter 1", "chapter 2", "chapter 3", "chapter 4"];
-  const [current, setCurrent] = useState(chapters[0]);
+export default function ChapterDropDown(props) {
+  const chapters = props.chapters;
+  const [DVisible, setDVisible] = useState(false);
+  const navigate = useNavigate();
 
-  const chaptersOptions = chapters.map((i) => {
+  const chaptersOptions = chapters.map((c, i) => {
+    console.log(`nav lins in render chapter`);
+    console.log(`/story/reading/${props.storyId}/${c._id}`);
     return (
-      <option
+      <li
         onClick={() => {
-          console.log(i);
+          setDVisible(!DVisible)
+          navigate(`/story/reading/${props.storyId}/${c._id}`, {
+            state: chapters,
+          });
         }}
       >
-        {i}
-      </option>
+        Chapter {i + 1}
+      </li>
     );
   });
 
   return (
     <div className={styles.chapterContainer}>
-      <div>
-        {/* <button className={styles.chaptersBtn}>{current}</button> */}
-        {/* <button className={styles.chaptersBtn}>
-          {current}
+      <div style={{}}>
+        <button
+          style={{
+            width: "10rem",
+            padding: "10px",
+            backgroundColor: "#F4B886",
+            border: "none",
+          }}
+          onClick={() => {
+            setDVisible(!DVisible);
+          }}
+        >
+          {props.currentTitle}
         </button>
-        <div className={styles.chapters}>{chaptersOptions}</div> */}
-
-        <select>
-          {chaptersOptions}
-        </select>
+        {DVisible ? (
+          <div
+            style={{
+              position: "absolute",
+              overflowY: "auto",
+              height: "300px",
+              width: "10rem",
+            }}
+          >
+            {chaptersOptions}
+          </div>
+        ) : (
+          <div></div>
+        )}
       </div>
     </div>
   );

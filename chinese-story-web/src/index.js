@@ -29,8 +29,19 @@ const router = createBrowserRouter([
     element: <StoryPage />,
   },
   {
-    path: "/story/reading",
+    path: "/story/reading/:storyId/:chapterId",
     element: <Reading />,
+    loader: async ({ params }) => {
+      const storyId = params.storyId;
+      const chapterId = params.chapterId;
+      const chapter = await axios.get("/chapter", {
+        params: { chapterId: chapterId },
+      });
+      const frontBackChapter = await axios.get("/chapter/back-front", {
+        params: { storyId: storyId, chapterId: chapterId },
+      });
+      return { chapter, frontBackChapter };
+    },
   },
   {
     path: "/managment/",

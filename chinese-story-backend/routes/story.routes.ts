@@ -5,6 +5,8 @@ import multer from "multer";
 import {
   createChapter,
   deleteChapter,
+  getChapterLimited,
+  getFrontBackChapter,
   readChapter,
   uploadChapter,
 } from "../controller/chapter.controller";
@@ -50,6 +52,7 @@ export function routingLikeAPro(app: Application) {
   app.route("/story/image").patch(upload.single("image"), uploadImage);
   app.route("/story/tag").patch(addTag).delete(removeTag);
   app.route("/story/status").patch(updateStatus);
+  app.route("/story/chapters").get(getChapterLimited);
 
   //TODO delete Story after chapters are deleted
 
@@ -62,4 +65,6 @@ export function routingLikeAPro(app: Application) {
 
   app.route("/chapter/stories").get(getChapterByStoryId);
   app.route("/chapter/upload").post(upload.single("file"), uploadChapter);
+  app.route('/chapter/back-front').get(getFrontBackChapter);
+  
 }

@@ -1,5 +1,6 @@
 // DAO for Chapter
 
+import { log } from "node:console";
 import Chapter from "../db/models/Chapter";
 
 class ChapterDao {
@@ -44,6 +45,45 @@ class ChapterDao {
     try {
       const chapters = await Chapter.find({ storyId: storyId });
       return chapters;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // get all chapters by storyId
+  // but don't retrive chapterContent
+
+  async getChaptersLimited(storyId: string) {
+    try {
+      const chapters = await Chapter.find(
+        { storyId: storyId },
+        "_id storyId chapterTitle"
+      );
+      return chapters;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // Get front and back chapter of a chapter
+
+  async getFrontBack(storyId: string, chapterId: string) {
+    try {
+      const ltChapters = await Chapter.find(
+        { _id: { $lt: chapterId }, storyId: storyId },
+        "_id"
+      );
+      const gtChapters = await Chapter.find(
+        { _id: { $gt: chapterId }, storyId: storyId },
+        "_id"
+      );
+      const backChapter = ltChapters[ltChapters.length - 1];
+      const frontChapter = gtChapters[0];
+
+      return {
+        frontChapter: frontChapter,
+        backChapter: backChapter,
+      };
     } catch (err) {
       console.log(err);
     }

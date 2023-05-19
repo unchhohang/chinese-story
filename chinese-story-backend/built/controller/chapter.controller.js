@@ -36,7 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteChapter = exports.readChapter = exports.uploadChapter = exports.createChapter = void 0;
+exports.deleteChapter = exports.readChapter = exports.getFrontBackChapter = exports.getChapterLimited = exports.uploadChapter = exports.createChapter = void 0;
 const chapter_dao_1 = __importDefault(require("../dao/chapter.dao"));
 const textract_1 = __importDefault(require("textract"));
 const fs = __importStar(require("node:fs/promises"));
@@ -69,6 +69,22 @@ function uploadChapter(req, res) {
     });
 }
 exports.uploadChapter = uploadChapter;
+// Get chapter for chapter table
+// chapter content not included
+function getChapterLimited(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const chapters = yield chapter_dao_1.default.getChaptersLimited(String(req.query.storyId));
+        res.send(chapters);
+    });
+}
+exports.getChapterLimited = getChapterLimited;
+function getFrontBackChapter(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const chapter = yield chapter_dao_1.default.getFrontBack(String(req.query.storyId), String(req.query.chapterId));
+        res.send(chapter);
+    });
+}
+exports.getFrontBackChapter = getFrontBackChapter;
 // Read chapter by Id
 function readChapter(req, res) {
     return __awaiter(this, void 0, void 0, function* () {

@@ -6,11 +6,13 @@ import React, { useState } from "react";
 import { Search, SearchOutline } from "react-ionicons";
 import styles from "../css/header.module.css";
 import logo from "../asset/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import HeaderAds from "./HeaderAds";
 
 export default function Header(props) {
   const genres = ["all", "action", "mystery", "comedy", "romance"];
+  const navigation = useNavigate();
 
   const renderGenres = genres.map((type, i) => {
     return (
@@ -77,8 +79,16 @@ export default function Header(props) {
     <>
       <div>
         <div className={styles.container}>
-          <div>
-            <img src={logo} alt={"logo"} height="50em" width="160em" />
+          <div className={styles.logo}>
+            <img
+              src={logo}
+              alt={"logo"}
+              height="50em"
+              width="160em"
+              onClick={() => {
+                navigation("/");
+              }}
+            />
           </div>
           <div className={styles.searchContainer}>
             <div>
@@ -122,17 +132,7 @@ export default function Header(props) {
           </div>
         </div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          backgroundColor: "black",
-          color: "white",
-          height: "20vh",
-        }}
-      >
-        <h1>Ads goes here...</h1>
-      </div>
+      <HeaderAds />
     </>
   );
 }

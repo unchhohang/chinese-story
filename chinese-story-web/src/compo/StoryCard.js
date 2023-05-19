@@ -28,7 +28,7 @@ export default function StoryCard(props) {
 
   function openStory() {
     console.log("hello redirec");
-    navigate("/story");
+    navigate("/story", { state: { story: props.story } });
   }
 
   return (

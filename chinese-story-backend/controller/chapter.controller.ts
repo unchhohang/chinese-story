@@ -38,6 +38,24 @@ export async function uploadChapter(req: Request, res: Response) {
   res.send(200);
 }
 
+// Get chapter for chapter table
+// chapter content not included
+
+export async function getChapterLimited(req: Request, res: Response) {
+  const chapters = await chapterDao.getChaptersLimited(
+    String(req.query.storyId)
+  );
+  res.send(chapters);
+}
+
+export async function getFrontBackChapter(req: Request, res: Response) {
+  const chapter = await chapterDao.getFrontBack(
+    String(req.query.storyId),
+    String(req.query.chapterId)
+  );
+  res.send(chapter);
+}
+
 // Read chapter by Id
 export async function readChapter(req: Request, res: Response) {
   const chapter = await chapterDao.read(String(req.query.chapterId));

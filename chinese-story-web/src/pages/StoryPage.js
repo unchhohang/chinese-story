@@ -1,15 +1,52 @@
 // Story page
 
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 import Header from "../compo/Header";
+import OnlyLogoHeader from "../compo/OnlyLogoHeader";
 import StoryHead from "../compo/StoryHead";
 import styles from "../css/storyPage.module.css";
 
 export default function StoryPage() {
+  const location = useLocation();
+  const story = location.state.story;
+  const navigate = useNavigate();
+
+  const [chapters, setChapters] = useState([]);
+
+  const RenderChapters = chapters.map((chapter, i) => {
+    return (
+      <div
+        key={i}
+        className={styles.tableContent}
+        onClick={() => {
+          navigate(`/story/reading/${story._id}/${chapter._id}`, {
+            state: chapters,
+          });
+        }}
+      >
+        {chapter.chapterTitle}
+      </div>
+    );
+  });
+
+  useEffect(() => {
+    axios
+      .get("/story/chapters", { params: { storyId: story._id } })
+      .then((res) => {
+        console.log(`chapters in useEffect`);
+        console.log(res.data);
+        setChapters(res.data);
+      })
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
     <div>
-      <Header />
-      <StoryHead />
+      <OnlyLogoHeader />
+      <StoryHead story={story} chapterCount={chapters.length} />
 
       {/* about and table of content */}
       <div>
@@ -20,14 +57,7 @@ export default function StoryPage() {
             margin: "5px",
           }}
         >
-          dummy text of the printing and typesetting industry. Lorem Ipsum has
-          been the industry's standard dummy text ever since the 1500s, when an
-          unknown printer took a galley of type and scrambled it to make a type
-          specimen book. It has survived not only five centuries, but also the
-          leap into electronic typesetting, remaining essentially unchanged. It
-          was popularised in the 1960s with the release of Letraset sheets
-          containing Lorem Ipsum passages, and more recently with desktop
-          publishing software like Aldus PageMaker including versions of Lorem I
+          {story.synopsis ? story.synopsis : ""}
         </div>
         <h1>Table of Content</h1>
         <div
@@ -35,15 +65,14 @@ export default function StoryPage() {
             display: "grid",
             columnGap: "50px",
             gridTemplateColumns: "auto auto",
-            margin: "10px"
+            margin: "10px",
           }}
         >
-          <div className={styles.tableContent}>Chapter 1 : Sins of Legend</div>
-          <div className={styles.tableContent}>Chapter 2 : Curse and Curse</div>
-          <div className={styles.tableContent}>Chapter 1 : Sins of Legend</div>
-          <div className={styles.tableContent}>Chapter 2 : Curse and Curse</div>
-          <div className={styles.tableContent}>Chapter 1 : Sins of Legend</div>
-          <div className={styles.tableContent}>Chapter 2 : Curse and Curse</div>
+          {chapters.length === 0 ? (
+            <ClipLoader />
+          ) : (
+            <div>{RenderChapters} </div>
+          )}
         </div>
       </div>
     </div>

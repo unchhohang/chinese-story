@@ -58,3 +58,11 @@ li {
 li:hover {
   background-color: black;
 }
+
+.logo{
+  margin: 5px;
+}
+
+.logo:hover{
+  cursor: pointer;
+}

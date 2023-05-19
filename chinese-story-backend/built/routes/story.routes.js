@@ -29,6 +29,7 @@ function routingLikeAPro(app) {
     app.route("/story/image").patch(upload.single("image"), story_controller_1.uploadImage);
     app.route("/story/tag").patch(story_controller_1.addTag).delete(story_controller_1.removeTag);
     app.route("/story/status").patch(story_controller_1.updateStatus);
+    app.route("/story/chapters").get(chapter_controller_1.getChapterLimited);
     //TODO delete Story after chapters are deleted
     // Chapters routes too
     app
@@ -38,5 +39,6 @@ function routingLikeAPro(app) {
         .delete(chapter_controller_1.deleteChapter);
     app.route("/chapter/stories").get(story_controller_1.getChapterByStoryId);
     app.route("/chapter/upload").post(upload.single("file"), chapter_controller_1.uploadChapter);
+    app.route('/chapter/back-front').get(chapter_controller_1.getFrontBackChapter);
 }
 exports.routingLikeAPro = routingLikeAPro;

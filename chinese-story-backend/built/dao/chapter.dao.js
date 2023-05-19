@@ -69,6 +69,37 @@ class ChapterDao {
             }
         });
     }
+    // get all chapters by storyId
+    // but don't retrive chapterContent
+    getChaptersLimited(storyId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const chapters = yield Chapter_1.default.find({ storyId: storyId }, "_id storyId chapterTitle");
+                return chapters;
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
+    // Get front and back chapter of a chapter
+    getFrontBack(storyId, chapterId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const ltChapters = yield Chapter_1.default.find({ _id: { $lt: chapterId }, storyId: storyId }, "_id");
+                const gtChapters = yield Chapter_1.default.find({ _id: { $gt: chapterId }, storyId: storyId }, "_id");
+                const backChapter = ltChapters[ltChapters.length - 1];
+                const frontChapter = gtChapters[0];
+                return {
+                    frontChapter: frontChapter,
+                    backChapter: backChapter,
+                };
+            }
+            catch (err) {
+                console.log(err);
+            }
+        });
+    }
     // Delete chapter by chapterId
     delete(chapterId) {
         return __awaiter(this, void 0, void 0, function* () {

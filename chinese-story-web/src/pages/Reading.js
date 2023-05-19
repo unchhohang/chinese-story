@@ -7,31 +7,30 @@ import {
   ArrowForwardOutline,
   BookOutline,
 } from "react-ionicons";
+import { useLoaderData, useLocation, useNavigate } from "react-router-dom";
 import ChapterDropDown from "../compo/ChapterDropDown";
 import Header from "../compo/Header";
+import OnlyLogoHeader from "../compo/OnlyLogoHeader";
 import styles from "../css/reading.module.css";
 
 export default function Reading() {
   const [content, setContent] = useState([]);
+  const data = useLoaderData();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const chapters = location.state;
+
+  const chapter = data.chapter.data;
+  const backChapterId = data.frontBackChapter.data?.backChapter?._id;
+  const frontChapterId = data.frontBackChapter.data?.frontChapter?._id;
 
   useEffect(() => {
-    axios
-      .get("/chapter", {
-        params: {
-          chapterId: "644f77e1f95119a7bb542b2d",
-        },
-      })
-      .then((res) => {
-        // purify the content LOL
-        let data = res.data.chapterContent;
-        let splited = data.split("\n");
-        let purified = splited.filter((i) => i !== "");
-        setContent(purified);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (chapter.chapterContent === undefined) return;
+    let data = chapter.chapterContent;
+    let splited = data.split("\n");
+    let purified = splited.filter((i) => i !== "");
+    setContent(purified);
+  }, [data]);
 
   const renderContent = content.map((i) => {
     return <p>{i}</p>;
@@ -39,12 +38,16 @@ export default function Reading() {
 
   return (
     <div>
-      <Header />
-      <h1>Chapter 1: Sins of Legend</h1>
+      <OnlyLogoHeader />
+      <h1 style={{ textAlign: "center" }}>{chapter.chapterTitle}</h1>
 
       {/* Chapter dropdown */}
       <div>
-        <ChapterDropDown />
+        <ChapterDropDown
+          storyId={chapter.storyId}
+          chapters={chapters}
+          currentTitle={chapter.chapterTitle}
+        />{" "}
       </div>
 
       <div>{renderContent}</div>
@@ -57,12 +60,37 @@ export default function Reading() {
 
       {/* next btn */}
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <button style={{ padding: "5px", margin: "10px" }}>
-          <ArrowBackOutline color={"#00000"} height="25px" width="25px" />
-        </button>
-        <button style={{ padding: "5px", margin: "10px" }}>
-          <ArrowForwardOutline color={"#00000"} height="25px" width="25px" />
-        </button>
+        {backChapterId ? (
+          <button
+            style={{ padding: "5px", margin: "10px" }}
+            onClick={() => {
+              navigate(`/story/reading/${chapter.storyId}/${backChapterId}`, {
+                state: chapters,
+              });
+            }}
+          >
+            <ArrowBackOutline color={"#00000"} height="25px" width="25px" />
+          </button>
+        ) : (
+          ""
+        )}
+        {frontChapterId ? (
+          <button style={{ padding: "5px", margin: "10px" }}>
+            <ArrowForwardOutline
+              color={"#00000"}
+              height="25px"
+              width="25px"
+              onClick={() => {
+                navigate(
+                  `/story/reading/${chapter.storyId}/${frontChapterId}`,
+                  { state: chapters }
+                );
+              }}
+            />
+          </button>
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
